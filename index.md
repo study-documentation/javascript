@@ -1,4 +1,5 @@
 # Javascript
+What better way to refresh on syntax than by writing yourself a `Javascript` textbook?
 
 ## Basics of JavaScript
 
