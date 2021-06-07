@@ -189,6 +189,7 @@ for(let number of numbers){
 `numbers.unshift()` - add to the beginning <br>
 `numbers.splice(index to start adding, how many things to delete, stuff to add)`<br>
 
+
 #### Finding Elements
 
 ##### Finding primitives
@@ -208,20 +209,19 @@ array.find( function(fruit) {
 ```
 Clean this up with an arrow function...<br>
 `array.find(fruit => fruit.taste === ‘tart’)`<br>
-
 `array.findIndex()` - this finds the index of a desired object<br>
 
-#### Removing Elements
 
+#### Removing Elements
 `array.pop` - removes AND returns the last element in an array.<br>
 `array.shift` - removes first element<br>
 `array.splice(2,1)` - this says delete 2 elements starting at index 1<br>
 
 #### Eviserate an Array
-
 `array = [];` <— reassign it as an empty array. Only works on arrays assigned with ‘let’. Also garbage collection will not remove the array if there are any other references to the original array.<br>
 `array.length = 0` <— this will truncate the array<br>
 `array.splice (0, array.length)` <— “slash it, slash it” - Ron Swanson<br>
+
 
 #### Combining and Slicing Arrays
 ```
@@ -233,9 +233,77 @@ Combine via..
 Better yet use the spread operator…<br>
 `const muchArray = […array1, …array2];`<br>
 
-
 Slice via…<br>
 `const newerArray = newArray.slice(2)` <— places everything beginning at index 2 into this new array.<br>
 
-#### 
+
+#### Iterating over an Array
+If some logic is to be applied to each element in an array. Use .forEach()<br>
+`array.forEach( param => action);`<br>
+
+
+#### Joining Arrays
+`array.join()` <— returns a string and joins using some character
+`string.split()` <— converts a string into an array
+```
+let message = “regex is dumb”;
+let array = message.split(“ ”);
+let urlSlug = array.join(‘-’)
+```
+The result of this is —> regex-is-dumb
+
+
+#### Sorting Arrays
+`array.sort()`
+`array.reverse()`
+
+In the params of sort a predicate can be built that assumes the role of compareTo in Java. This is the method for sorting objects in JavaScript. So…
+```
+objects.sort(function(a,b){
+	if(a.name < b.name) return -1;
+	if(a.name > b.name) return 1;
+	return 0;
+});
+```
+This sorting is done by ascii value. So, case sensitivity is an issue written this way. Add a.name.toUppercase and b.name.toUpperCase to avoid sorting issues related to case.
+
+
+#### Inspecting the Contents of an Array
+This can be done via `array.every` and `array.some`. These are used on conjunction with a callback function. 
+
+
+#### Filtering an Array
+`const filtered = numbers.filter(value => value >=0);`<br>
+
+Filter creates a new array as opposed to altering the original. This arrow function states filter into a new array the values in the original array that are greater than or equal to 0.
+
+
+#### Mapping an Array
+`array.map` allows me to map the elements of an array into another object. That can be into some HTML markup or as  property in a new object.
+
+`const items = filtered.map(n => ({value: n}) );`<br>
+With that line of code the an array of objects is created each of which has a property called value that is set to n. Note the parenthesis around the curly braces. This is vital if passing an object through an arrow function.
+
+#### Chaining
+Just like streams in Java the above functions can be chained. This simplifies code.
+For example…
+```
+const numbers = [1, -1, 2, 3]
+
+const items = numbers
+.filter(n => n >= 0)
+.map(n => ({value: n}))
+.filter(obj => obj.value > 1)
+.map(obj => obj.value)
+```
+Logging items results in an output of [2,3]
+
+
+#### Reducing an Array
+`array.reduce((accumulator, currentValue) => {return accumulator + currentValue}, 0);`
+
+The first param is callback function and the second param is the initial value of the accumulator. The accumulator defaults to a the first element in the array. Therefore, 0 is not necessary.
+
+
+
 
