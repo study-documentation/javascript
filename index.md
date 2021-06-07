@@ -1,5 +1,5 @@
 # Javascript
-What better way to refresh on syntax than by writing yourself a `Javascript` textbook?
+What better way to refresh on syntax than by writing oneself a `Javascript` textbook?
 
 ## Basics of JavaScript
 
@@ -202,10 +202,40 @@ Use `nameOfArray.find()`<br>
 
 Array.find requires a predicate. So…
 ```
-Array.find( function(fruit) {
+array.find( function(fruit) {
 	return fruit.taste === ‘tart’;
 });
 ```
+Clean this up with an arrow function...<br>
+`array.find(fruit => fruit.taste === ‘tart’)`<br>
 
-`Array.findIndex()` - this finds the index of a desired object<br>
+`array.findIndex()` - this finds the index of a desired object<br>
+
+#### Removing Elements
+
+`array.pop` - removes AND returns the last element in an array.<br>
+`array.shift` - removes first element<br>
+`array.splice(2,1)` - this says delete 2 elements starting at index 1<br>
+
+#### Eviserate an Array
+
+`array = [];` <— reassign it as an empty array. Only works on arrays assigned with ‘let’. Also garbage collection will not remove the array if there are any other references to the original array.<br>
+`array.length = 0` <— this will truncate the array<br>
+`array.splice (0, array.length)` <— “slash it, slash it” - Ron Swanson<br>
+
+#### Combining and Slicing Arrays
+```
+array1 = [1,2,3]
+array2 = [4,5,6]
+```
+Combine via..
+`const newArray = array1.concat(array2)`<br>
+Better yet use the spread operator…<br>
+`const muchArray = […array1, …array2];`<br>
+
+
+Slice via…<br>
+`const newerArray = newArray.slice(2)` <— places everything beginning at index 2 into this new array.<br>
+
+#### 
 
