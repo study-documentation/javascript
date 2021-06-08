@@ -206,3 +206,20 @@ const server = http.createServer((req,res) => {
 ```
 
 All of this said, this is a low level view of HTTP req/res in Node. It is typically via `express` that this work takes place.
+
+## Node Package Manager
+
+The heaviest thing in outter space.
+
+### package.json
+
+Given a framework that automatically creates the package.json is not being used the following commands will create it. This should be completed prior to installing npm.
+`npm init` <br>
+or <br>
+`npm init --yes` <br>
+
+### Installing a Node Package
+
+adding a third party library to a node project.
+The library of third party libraries is [available here.](https://www.npmjs.com) Install instructions are available with each item.
+That said, its `npm i <name of the thing>`
