@@ -157,3 +157,52 @@ logger.log('message');
 (Note: emitter is deleted and replaced by logger as it is now the source for all event methods.)
 
 ### HTTP Module
+
+EventEmitter is baked into the HTTP module. HTTP objects inherit all event methods.
+
+```
+const http = require('http')
+
+const server = http.createServer();
+
+server.on('connection', (socket) => {
+    console.log('New Connection...')
+});
+
+server.listen(3000)
+
+console.log('listening on port 3000...');
+```
+
+Given the code above entering `node app.js` into the terminal and then `localhost:3000` into a browser will result in `new connection...` appearing in the terminal.
+Typically, a callback function will be placed directly into the `http.createServer()` method. For example,
+
+```
+const server = http.createServer((req,res) => {
+    if (req.url === '/') {
+        res.write('7 Baconators, please and thank you');
+        res.end();
+    }
+});
+
+server.listen(3000)
+
+console.log('listening on port 3000...');
+```
+
+Now, `7 Baconators, please and thank you` appears in the browser. Additionally, inside this createServer method is where routing of endpoints can be handled, such that...
+
+```
+const server = http.createServer((req,res) => {
+    if (req.url === '/') {
+        res.write('7 Baconators, please and thank you');
+        res.end();
+    }
+    if (req.url === '/baconators') {
+        res.write(JSON.stringify(['baconator', 'baconator', 'baconator', 'baconator', 'baconator', 'baconator', ' last baconator']));
+        res.end;
+    }
+});
+```
+
+All of this said, this is a low level view of HTTP req/res in Node. It is typically via `express` that this work takes place.

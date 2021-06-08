@@ -38,3 +38,25 @@ logger.on('messageLogged', (arg) => {
 });
 
 logger.log('message');
+
+/*
+    HTTP Module
+*/
+const http = require('http')
+
+const server = http.createServer((req,res) => {
+    if (req.url === '/') {
+        res.write('7 Baconators, please and thank you');
+        res.end();
+    }
+    if (req.url === '/baconators') {
+        res.write(JSON.stringify(['baconator', 'baconator', 'baconator', 'baconator', 'baconator', 'baconator', ' last baconator']));
+        res.end;
+    }
+});
+
+server.listen(3000)
+
+console.log('listening on port 3000...');
+
+
