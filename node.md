@@ -223,3 +223,15 @@ or <br>
 adding a third party library to a node project.
 The library of third party libraries is [available here.](https://www.npmjs.com) Install instructions are available with each item.
 That said, its `npm i <name of the thing>`
+`--save` is no longer needed but it was a thing.
+
+### Using a Package
+
+pop this familiar duder at the top of the file.<br>
+`var _ = require('underscore');`<br>
+where<br>
+`var <assigned name> = require(<name of module in dependencies>)`<br>
+
+
+
+
