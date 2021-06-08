@@ -1,8 +1,8 @@
 //creating and calling modules
 
-var log = require('./logger')
-console.log(log)
-log.log('meeeeesssage');
+//var log = require('./logger')
+//console.log(log)
+//log.log('meeeeesssage');
 
 //path module
 const path = require('path');
@@ -24,3 +24,17 @@ const asyncFiles = fs.readdir('./', function(err, files){
     if(err) console.log('Error', err);
     else console.log('Result', files)
 });
+
+/*
+    events module
+*/
+const EventEmitter = require('events');
+
+const Logger = require('./logger');
+const logger = new Logger();
+
+logger.on('messageLogged', (arg) => {
+    console.log('listener called', arg)
+});
+
+logger.log('message');

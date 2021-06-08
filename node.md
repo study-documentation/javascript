@@ -112,3 +112,48 @@ emitter.on('messageLogged', (arg) => {
 
 emitter.emit('messageLogged', { id: 1, url: 'http://'})
 ```
+
+#### Extending EventEmitter
+
+In real applications it is more practical to build a utility EventEmitter class and call it throughout a program.
+
+The log file used early should be updated.
+
+```
+const EventEmitter = require('events')
+
+var url = 'http://mylogger.io/log'
+
+class Logger extends EventEmitter{
+    log(message) {
+        //Send an HTTP request
+        console.log(message);
+
+        //Raise an event
+        this.emit('messageLogged', {id: 1, url: 'http://'})
+    }
+}
+
+module.exports = Logger;
+```
+
+(Note: emitter is deleted and references to it are changed to `this`.)
+
+Now in the app.js file.
+
+```
+const EventEmitter = require('events');
+
+const Logger = require('./logger');
+const logger = new Logger();
+
+logger.on('messageLogged', (arg) => {
+    console.log('listener called', arg)
+});
+
+logger.log('message');
+```
+
+(Note: emitter is deleted and replaced by logger as it is now the source for all event methods.)
+
+### HTTP Module
