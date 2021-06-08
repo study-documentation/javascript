@@ -55,3 +55,60 @@ this code returns...
 ```
 
 ### OS Module
+
+The OS module is a means for inspecting the state of the operating system. The code below checks and logs the total and free memory of a machine. Do you have enough space to complete this download?
+
+```
+const os = require('os');
+const totalMemory = os.totalmem();
+const freeMemory = os.freemem();
+console.log(`Total Memory ${totalMemory}`);
+console.log(`Free Memory ${freeMemory}`);
+```
+
+### File System Module
+
+The methods available to the file system module come in pairs. Each method has an asychronous and synchronous option. Node is built upon a nonblocking asynchronous architecture, so use that. The code below demonstrates a simple directory read as both synchronous and asynchronous calls. The result is the same as `ls` in command line.
+
+```
+const fs = require('fs');
+const files = fs.readdirSync('./');
+console.log(files);
+const asyncFiles = fs.readdir('./', function(err, files){
+    if(err) console.log('Error', err);
+    else console.log('Result', files)
+});
+```
+
+Note: this is not proper error handling. It is just a demonstration of the fact that asynchronous methods require a callback method as the second argument.
+
+### Events Module
+
+Events are a core concept to the node architecture. Events are a signal that somehting has happened. For example, every HTTP request to a given port is an event. Responding to these events is the purpose of this module. The order of creation is important in calling listening and raising. Listeners must be declared first as the emit method iterates through the list of all existing listeners.
+
+```
+const EventEmitter = require('events');
+const emitter = new EventEmitter();
+
+//register a listener
+emitter.on('messageLogged', function(){
+    console.log('listener called')
+})
+
+//raise an event
+emitter.emit('messageLogged')
+```
+
+Note: `EventEmitter` is written in pascal notation becuase it is a class not a function or value. Thus why a `new` EventEmitter must be created.
+
+#### Event Aruguments
+
+It is often the case that information must be created about an event or include. The code below demonstrates how this is completed. Note the addition of an arrow function to `.on` to handle the arg and the arg object added to `.emit`. The arg object added to emit is a better option than arbitrary arguments of the form `emitter.emit('messageLogged', 1, 'http://')`
+
+```
+emitter.on('messageLogged', (arg) => {
+    console.log('listener called', arg)
+});
+
+emitter.emit('messageLogged', { id: 1, url: 'http://'})
+```
