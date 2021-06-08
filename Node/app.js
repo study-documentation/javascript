@@ -8,3 +8,6 @@ log.log('meeeeesssage');
 const path = require('path');
 var pathObj = path.parse(__filename);
 console.log(pathObj)
+
+//OS Module
+const os = require('os');
