@@ -6,6 +6,8 @@ What better way to learn node.js than to write oneself a textbook.
 
 node is not a framework nor a language. It is a runtime environment. Specifically, a nonblocking asynchronous runtime environment. This means a single thread handles multiple requests. The single thread uses an event queue to move between tasks. This architecture makes Node great for I/O intensive apps and less ideal for CPU intensive apps.
 
+---
+
 ## Node Module System
 
 The node module system is the architecture in place which allows for inheritance between files that will be passed through the node runtime environment
@@ -27,6 +29,8 @@ It is best to store this required module in constant so that accidental changes 
 
 Node does not execute code directly. It wraps the code in each module in one of many global functions.<br>
 `(function(exports, require, module, __filename, __dirname))`<br>
+
+---
 
 ## Built-in Node Modules
 
@@ -207,6 +211,8 @@ const server = http.createServer((req,res) => {
 
 All of this said, this is a low level view of HTTP req/res in Node. It is typically via `express` that this work takes place.
 
+---
+
 ## Node Package Manager
 
 The heaviest thing in outter space.
@@ -304,3 +310,162 @@ Now in other projects this package will be available in other projects via...<br
 ### Updating a Published Package
 
 `npm version <major, minor or patch>` <-- the given version will be incremented
+
+---
+
+## RESTful services with Express
+
+### Getting Started
+
+Compared to the `http` module, express provides a simplified system for creating endpoints.
+The following code block demonstrates importing express and creating a get request.
+
+```
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+    res.send('Hello y\'all');
+});
+
+app.get('/api/courses', (req, res) => {
+    res.send([1,2,3,4])
+});
+app.listen(3000, () => console.log('Listening on port 3000'))
+```
+
+Note that...
+
+- express is a method not a class
+- the methods take two arguments an endpoint and a callback function
+- a callback function determines what the endpoint does
+- a listen method specifies the port (or site) on which to listen and a callback function for logging
+
+### Nodemon
+
+Install Nodemon globally via...<br>
+`npm i -g nodemon`
+
+now use...<br>
+`nodemon <name of entry point>.js` to spin up the program.<br>
+
+This allows node apps to hot refresh.
+
+### Environment Variables
+
+Hard coding a port (and many other values) is bad practice.
+Calling environment variables in express is don this way...<br>
+
+```
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Listening on port ${port}`))
+```
+
+On a mac env variables are set in the command line like this...<br>
+`export PORT=5000`<br>
+where<br>
+`export <name of variable>=<value>`
+
+### Route Parameters
+
+Here are a few examples or route params:
+
+```
+app.get('/api/courses/:id', (req, res) => {
+    res.send(req.params.id);
+})
+```
+
+`1` in browser<br>
+
+```
+app.get('/api/posts/:year/:month', (req, res) => {
+    res.send(req.params);
+})
+```
+
+This JSON appears in the browser
+
+```
+{
+    "year": "2021",
+    "month ":"3"
+}
+```
+
+#### Query String Params
+
+```
+app.get('/api/posts/:year/:month', (req, res) => {
+    res.send(req.query);
+})
+```
+
+Query params are stored in an object as key:value pairs.
+
+### GET
+
+Below is an example of a GET request that handles request params and does some data validation
+
+```
+app.get('/api/courses/:id', (req, res) => {
+    const course = courses.find(c => c.id = parseInt(req.params.id));
+    if (!course) res.status(404).send('A course with that ID was not found.')
+    res.send(course);
+})
+```
+
+### POST
+
+First, a piece of middleware must be added via...<br>
+`app.use(express.json())`<br>
+Then the following endpoint is created...<br>
+
+```
+app.post('/api/courses', (req, res) => {
+    const course = {
+        id: courses.length + 1,
+        name: req.body.name
+    };
+    courses.push(course);
+    res.send(course);
+
+})
+```
+
+By convention, when we post an object in the server, when the server creates a new object or resource, we should return that object in the body of the response. i.e. `ResponseBody<course>` in Java/Spring
+
+### Data Validation
+
+Never trust the client.
+
+Here is some simple data validation.
+
+```
+if (!req.body.name || req.body.name.length < 3) {
+        res.status(400).send('Not legit bruv');
+        return;
+    }
+
+    const course = {
+        id: courses.length + 1,
+        name: req.body.name
+    };
+    courses.push(course);
+    res.send(course);
+```
+
+However, for any object of moderate complexity hard coding all data validation would be time consuming.
+Packages like Joi allow for the building of schemas and then using that as a basis for data validation.
+This code might look like...<br>
+
+```
+const schema = {
+    name: Joi.string().min(3).required()
+};
+
+const result = schema.validate(req.body);
+console.log(result);
+```
+
+### PUT
