@@ -230,8 +230,18 @@ That said, its `npm i <name of the thing>`
 pop this familiar duder at the top of the file.<br>
 `var _ = require('underscore');`<br>
 where<br>
-`var <assigned name> = require(<name of module in dependencies>)`<br>
+`var <assigned name> = require(<name of module in dependencies>)`v
 
+### Version Control
 
+Make sure that all projects have a `.gitignore` with `node_modules/_`.
 
+### Semantic Versioning
 
+`major version . minor version . patch release`<br>
+
+- Major - Addition of a feature which might break an older API
+- Minor - Addition of a feature without breaking the existing API
+- Patch - Fix of a bug with in a minor version
+  `"^1.4.8"` <-- any minor version within 1<br>
+  `"~1.4.8"` <-- any patch release within 1.4<br>
