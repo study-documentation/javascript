@@ -409,8 +409,8 @@ Below is an example of a GET request that handles request params and does some d
 
 ```
 app.get('/api/courses/:id', (req, res) => {
-    const course = courses.find(c => c.id = parseInt(req.params.id));
-    if (!course) res.status(404).send('A course with that ID was not found.')
+    const course = courses.find(c => c.id === parseInt(req.params.id));
+    if (!course) return res.status(404).send('A course with that ID was not found.');
     res.send(course);
 })
 ```
@@ -442,10 +442,7 @@ Never trust the client.
 Here is some simple data validation.
 
 ```
-if (!req.body.name || req.body.name.length < 3) {
-        res.status(400).send('Not legit bruv');
-        return;
-    }
+if (!req.body.name || req.body.name.length < 3) return res.status(400).send('Not legit bruv');
 
     const course = {
         id: courses.length + 1,
@@ -469,3 +466,36 @@ console.log(result);
 ```
 
 ### PUT
+
+A put request it going to look something like this... <br>
+
+```
+app.put('/api/courses/:id', (req, res) => {
+    //look up the course
+    const course = courses.find(c => c.id === parseInt(req.params.id));
+    if (!course) return res.status(404).send('A course with that ID was not found.')
+
+    //validate
+    if (!req.body.name || req.body.name.length < 3) return res.status(400).send('Not legit bruv');
+
+    //return
+    course.name = req.body.name;
+    res.send(course);
+});
+```
+
+NOTE: As more endpoints and requests are created, certain lines will be repeated. Look fo ropportunities to build helper functions. Also, object destructuring can be used to simplify statements such as `result.error` such that const { error } = result.error
+
+### DELETE
+
+```
+app.delete('api/courses/:id', (req, res) => {
+    const course = courses.find(c => c.id === parseInt(req.params.id));
+    if (!course) return res.status(404).send('A course with that ID was not found.')
+
+    const index = courses.indexOf(course);
+    courses.splice(index, 1);
+
+    res.send(course);
+})
+```

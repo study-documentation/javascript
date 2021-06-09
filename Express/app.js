@@ -42,7 +42,7 @@ app.post('/api/courses', (req, res) => {
 })
 
 app.get('/api/courses/:id', (req, res) => {
-    const course = courses.find(c => c.id = parseInt(req.params.id));
+    const course = courses.find(c => c.id === parseInt(req.params.id));
     if (!course) res.status(404).send('A course with that ID was not found.')
     res.send(course);
 })
@@ -50,18 +50,31 @@ app.get('/api/courses/:id', (req, res) => {
 app.put('/api/courses/:id', (req, res) => {
     //look up the course
     // if invalid, retiurn 400
+    const course = courses.find(c => c.id === parseInt(req.params.id));
+    if (!course) res.status(404).send('A course with that ID was not found.')
 
     //validate
     //if invalid, return 400
+    if (!req.body.name || req.body.name.length < 3) {
+        res.status(400).send('Not legit bruv');
+        return;
+    }
 
     //update course
     //return updated course
+    course.name = req.body.name;
+    res.send(course);
+});
+
+app.delete('api/courses/:id', (req, res) => {
+    const course = courses.find(c => c.id === parseInt(req.params.id));
+    if (!course) res.status(404).send('A course with that ID was not found.')
+
+    const index = courses.indexOf(course);
+    courses.splice(index, 1);
+
+    res.send(course);
 })
-
-
-
-
-
 
 
 
