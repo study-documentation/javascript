@@ -1,7 +1,6 @@
 {
   "name": "npm-demo",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,5 +10,10 @@
   "dependencies": {
     "mongoose": "^5.12.13",
     "underscore": "^1.13.1"
-  }
+  },
+  "devDependencies": {
+    "jshint": "^2.13.0"
+  },
+  "keywords": [],
+  "description": ""
 }

@@ -245,3 +245,62 @@ Make sure that all projects have a `.gitignore` with `node_modules/_`.
 - Patch - Fix of a bug with in a minor version
   `"^1.4.8"` <-- any minor version within 1<br>
   `"~1.4.8"` <-- any patch release within 1.4<br>
+
+### List the Installed Packages
+
+`npm list` will display a tree with all dependencies.
+`npm list --depth=0` will list just application dependencies.
+
+### Viewing Registry Info for a Package
+
+`npm view <name of package>` will display all the meta data about a package.
+The following flags will narrow the results of this view.
+
+- `dependencies`
+- `versions`
+
+### Upgrading/Downgrading a Package
+
+`npm i <name of package@x.y.z>`
+
+To find out if a certain dependency is out-of-date run...<br>
+`npm outdated` <-- this will display the Current, Wanted and Latest
+
+To update...<br>
+`npm update` <-- this will only update within the current major version so the app does not break
+`npm i <name of package>@<x.y.z>` <-- to update to the latest version. However, this would take a long time to complete for multiple dependencies.
+
+To update for an entire project.
+`npm i -g npm-check-updates` <-- this is a command line tool that will check for and update to latest version.
+`ncu -u` <-- this will update the package.json.
+`npm i` <-- run this next to bring node modules up-to-date with the package.json
+
+### DevDependencies
+
+Certain dependencies should not be included in production. Testing and such.
+`npm i <name of package> --save-dev`
+
+### Uninstalling a Package
+
+`npm un <name of package>`
+
+### Working with Global Packages
+
+pop a `-g` in there. Bada Bing.
+
+### Publishing Packages to the Registry
+
+Create a project via the steps outlined above.
+An npm.js account is necessary and can be created in the command line via...  
+`npm adduser`<br>
+Or login via...  
+`npm login`<br>
+Then run...  
+`npm publish`<br>
+
+Now in other projects this package will be available in other projects via...<br>
+`npm i <name of package>`
+
+### Updating a Published Package
+
+`npm version <major, minor or patch>` <-- the given version will be incremented
