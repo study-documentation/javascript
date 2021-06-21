@@ -28,3 +28,4 @@ Note that we can now pass `args.help` and `args.file`. since they are params and
 
 ### Argument Handling
 
+Thusfar argument handling takesplace in the `error` and `processFile` methods. These are just vanilla JS functions. The syntax for entering an argument in the command line is `node ex1.js --file=files/hello.txt`. first is the prompt then an `=` then the relative path in the project.
