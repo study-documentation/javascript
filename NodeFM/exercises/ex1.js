@@ -68,3 +68,24 @@ function printHelp() {
     console.log("")
     console.log("\"Don't ask me, cause I just don't know - Adrock\"")
 }
+
+/*
+
+NOTES: This lesson builds a command line script the explores the 3 standard streams, stdout, stdin, stderr
+
+Note the use of the hashbang and "use strict" the top. Strict mode prevents things like using 
+undeclared variables.
+
+path.resolve and .join are used to handle file paths. Join concatenates the current argument with the previous
+bit of path. resolve will treat it as a root directory and ignore previous paths.
+
+process.stdout.write must be used when working with buffers. Buffers are just binary streams and need to 
+be converted to strings by process.
+
+args._.includes("-") - the _ means anywhere in or something. Who knows.
+
+The onContents function in the file clause is a built-in that requires err handling as the first parameter.
+Error handling was built into this script as a function. readFile, onContents and processFile work together
+to render the file. processFile was built the other two are part of the JS API. 
+
+*/
