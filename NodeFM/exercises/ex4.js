@@ -43,13 +43,14 @@ async function main() {
 				});
 			});
 		},
-		get: util.promisify(myDB.get.bind(myDB)),
+		get: util.promisify(myDB.get.bind(myDB)), // util.promisify ships with node. 
 		all: util.promisify(myDB.all.bind(myDB)),
 		exec: util.promisify(myDB.exec.bind(myDB)),
 	};
 
 	var initSQL = fs.readFileSync(DB_SQL_PATH,"utf-8");
 	// TODO: initialize the DB structure
+	await SQL3.exec(initSQL);
 
 
 	var other = args.other;
@@ -70,10 +71,11 @@ function error(err) {
 }
 
 
-/*
+/* NOTES: Make a command line app that takes a parameter and sticks that, along with 
+a randomly generate key, into a DB record.
 
 remember __dirname
-NOTES: path.join(__dirname,"<some file name>")
+path.join(__dirname,"<some file name>")
 
 
  */
