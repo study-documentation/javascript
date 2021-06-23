@@ -8,10 +8,20 @@ var fs = require('fs'); // access file system
 var Transform = require("stream").Transform; // builtin. pick one off
 var zlib = require("zlib"); // compress output. decompress input
 
+var CAF = require("caf");
+
 var args = require("minimist")(process.argv.slice(2), {
     boolean: [ "help", "in", "out", "uncompress" ],
     string: [ "file" ]
 });
+
+processFile = CAF(processFile);
+
+function streamComplete(stream) {
+    return new Promise(function c(res){
+        stream.on("end", res);
+    });
+}
 
 var BASE_PATH = path.resolve(
     process.env.BASE_PATH || __dirname
@@ -27,13 +37,22 @@ else if (
     args.in ||
     args._.includes('-')
 ){
-    processFile(process.stdin)
+
+    let tooLong = CAF.timeout(3)
+    processFile(tooLong, process.stdin)
 }
 //join used to be resolve. Check the docs. 
 else if (args.file) {
 
     let stream = fs.createReadStream(path.join(BASE_PATH,args.file));
-    processFile(stream);
+
+    let tooLong = CAF.timeout(3, "Took too long");
+
+    processFile(tooLong, stream)
+    .then(function(){
+        console.log("Complete!")
+    })
+    .catch(error);
 }
 else {
     error("Incorrect Usage", true);
@@ -41,7 +60,7 @@ else {
 
 //****************************/
 
-function processFile(inStream) {
+function *processFile(signal, inStream) {
     var outStream = inStream;
 
     if (args.uncompress){
@@ -72,6 +91,13 @@ function processFile(inStream) {
         targetStream = fs.createWriteStream(OUTFILE);
     }
     outStream.pipe(targetStream);
+
+    signal.pr.catch(function f(){
+        outStream.unpipe(targetStream);
+        outStream.destroy();
+    });
+
+    yield streamComplete(outStream);
 }
 
 //note the use of a default value
@@ -84,8 +110,8 @@ function error(msg, includeHelp = false){
 }
 
 function printHelp() {
-    console.log("ex2 usage:")
-    console.log("     ex2.js --file={FILENAME}")
+    console.log("ex3 usage:")
+    console.log("     ex3.js --file={FILENAME}")
     console.log("")
     console.log("--help                 print this help")
     console.log("--file={FILENAME}      process the file")
@@ -99,25 +125,16 @@ function printHelp() {
 
 /*
 
-NOTES: Changing this whole jawn to be a stream handler
+NOTES: Determining the end of the stream. aka Async
+async function processFile(inStream)
+await streamComplete(outStream);
 
-stream.pipe is a builtin method for readable streams. It pipes them into a writable stream and 
-returns a readable which can them be piped into other writables and so on. Streams are more effiecient
-than passing strings around. Streams, you will recall, are always binary data
+Dis cool but there is no way to stop midstream because Promises are a black box of who-knows-what
 
-Converting to a stream is done using the file system (fs) package. processFile has been updated to handle these
-streams. These streams can be piped in and out of each other for the purposes of zipping or unzipping. But, the 
-pattern of readables get piped into writables must be followed. processFile has gorwn significantly and ultimately
-uses reassigning outStream to fulfill this pattern.
+Async timeouts and cancellation
 
-cat out.txt - print to terminal
 
-Compressing and uncompressing are simple via zlib. zlib .createGzip(); and .createGunzip();
-
-to uncompress and print in terminal:
-cat out.txt.gz | node ./ex2.js --uncompress --in --out
-
-to compress and create a new file:
-node ./ex2.js --file=files/hello.txt --compress
-
+Generator vs. Async
+async await
+* yeild
 */
