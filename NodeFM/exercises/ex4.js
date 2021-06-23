@@ -68,3 +68,12 @@ function error(err) {
 		console.log("");
 	}
 }
+
+
+/*
+
+remember __dirname
+NOTES: path.join(__dirname,"<some file name>")
+
+
+ */
