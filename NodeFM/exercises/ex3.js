@@ -158,6 +158,9 @@ line 63 - The function is changed to a generator and a signal is added as a para
 lines 95-97 - What the signal actually does is set. Disconnect and destroy the pipe.
 line 100 - awiat changed to yeild
 
+Note that Promise.all (returns an array of responses) is available for handling multiple streams.
+
 Syntax of Generator vs. Async
 async and await === * and yeild
+
 */
