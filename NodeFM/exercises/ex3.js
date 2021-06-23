@@ -125,16 +125,39 @@ function printHelp() {
 
 /*
 
-NOTES: Determining the end of the stream. aka Async
+NOTES: Determining the end of the stream. aka Async.
+As the project stands in ex2.js, if I add a console log at the end of processStream that prints "Complete!"
+that log will print before the stream is processed for all the reasons that you already now about threads
+in Java. This needs controlled for real world applications.
+
+Adding the 
 async function processFile(inStream)
 await streamComplete(outStream);
 
-Dis cool but there is no way to stop midstream because Promises are a black box of who-knows-what
+By changing the processFile function to be async and awaiting a streamComplete, a Promise is being added 
+to the process. streamComplete is a help function on lines 20 - 25. It takes a stream, returns a new Promise 
+the callback function of which looks for a response (the first param "end") and a callback of what to do with that 
+res (in this case it just returns the response no callback is necessary).
 
-Async timeouts and cancellation
+This streamComplete helper is awaited at the end of the processFile function to tell the function to wait
+for the "end" response from the stream.
 
+This cool but there is no way to stop midstream because async and fs.read are optimistic function. Furthermore,
+Promises are a black box of who-knows-what. Someone knows what, right? 
 
-Generator vs. Async
-async await
-* yeild
+Async operations can be timed-out and cancelled using Generators and a package or two.
+
+This whole second step hinges on the 'caf' package but above the following changes are used to create a async
+function that can respond to interuptions
+line 11 - caf is imported
+line 18 - processFile is reassigned as caf(processFile)
+lines 41-42 - a timeout is added to the --in command and the signal param is present.
+line 49 - timeout duration set. this is the signal
+line 51 - signal added to params
+line 63 - The function is changed to a generator and a signal is added as a parameter.
+lines 95-97 - What the signal actually does is set. Disconnect and destroy the pipe.
+line 100 - awiat changed to yeild
+
+Syntax of Generator vs. Async
+async and await === * and yeild
 */
