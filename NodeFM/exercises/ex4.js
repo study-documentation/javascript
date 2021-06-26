@@ -149,11 +149,47 @@ function error(err) {
 }
 
 
-/* NOTES: Make a command line app that takes a parameter and sticks that, along with 
-a randomly generate key, into a DB record.
+/* 
 
-remember __dirname
+NOTES: Make a command line app that takes a parameter and sticks that, along with 
+a randomly generate key, into a DB record. This example uses SQLite3. This entire exercise is a 
+valuable look into asnyc functions. Note that so far in the course async functions have been used 
+to handle streams, insert and pull from a database and will be used to create a web server. The point is
+that anytime a program depends upon a source outside itself for information the functions interacting
+with that data should be async/await. 
+
+OTHER = the varchar data the is being held in the DB
+SOMETHING = Primary key
+
+remember __dirname as a useful built in.
 path.join(__dirname,"<some file name>")
 
+STRUCTURE
+
+Note that lines....
+1-12 are imports
+15-22 are environment variables and the program entry point i.e. main() --> tres jav tres noice
+27-74 - define the main() function and the procedure of the program
+76-149 - define the various functions which are called throughout the main() function
+
+-----------------------------------
+
+Lines 36 - 49 are provided and not well explained in the course. 'run()' appears to be a functional
+interface in much the same form as functional databases in Java. SQL3 is an object that holds
+another run function and a reference to the database environment variables. get, all, exec are properties
+of the SQL3 object. Note the difference from Java here. In Java this DB object would be its own class
+file. But other than the different file structure it makes perfect sense that this object exists, a database
+is a thing that needs represented. Its not just a series of functions. Databases have properties therefore
+must be represented as objects programtically.
+
+This particular database is executed as a file as can be seen on lines 47-9ish
+
+Note the simple logic spread throughout the helper functions. things like 'if(result && result.id){}'. This
+is the kind of logic seen in APIs. Simple confirmation of certain pieces of data and contents thereof 
+along with true or false returns.
+
+Its also worth noting how these functions are nested in lines 60-70. If some piece of data exists, perform
+a task. If that task returns something meaningful perform another. Again, this is the simple kind of logic
+common the real work.
 
  */
