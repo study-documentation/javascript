@@ -20,7 +20,6 @@ const HTTP_PORT = 8039;
 var delay = util.promisify(setTimeout);
 
 // define some SQLite3 database helpers
-//   (comment out if sqlite3 not working for you)
 var myDB = new sqlite3.Database(DB_PATH);
 var SQL3 = {
 	run(...args) {
@@ -84,11 +83,6 @@ function defineRoutes() {
 	}))
 }
 
-
-// *************************
-// NOTE: if sqlite3 is not working for you,
-//   comment this version out
-// *************************
 async function getAllRecords() {
 	var result = await SQL3.all(
 		`
@@ -106,18 +100,6 @@ async function getAllRecords() {
 	return result;
 }
 
-// *************************
-// NOTE: uncomment and use this version if
-//   sqlite3 is not working for you
-// *************************
-// async function getAllRecords() {
-// 	// fake DB results returned
-// 	return [
-// 		{ something: 53988400, other: "hello" },
-// 		{ something: 342383991, other: "hello" },
-// 		{ something: 7367746, other: "world" },
-// 	];
-// }
 
 /*
 
@@ -125,6 +107,15 @@ NOTES:
 
 A middleware is a function that gets called if an incoming request matches some criteria.
 
-defining routes as above is the same as defining routes in a SPA. specific first followed by the general. and if statements etc.
+defining routes as above is the same as defining routes in a SPA. specific first followed by the general. 
+like if statements etc.
 
+Note that in 100 lines of code, an API is built and data is pulled from SQLite DB. The DB code is no different than
+in ex4. Again the patterns are the same. reqs are from the client to the server. res are from the serve to the client.
+servers receive requests and send responses. Clients send requests and receive responses. so the res req language is 
+from the perspective of the server. Therefore, responses are things like headers and JSON and requests are things like
+GET, POST, PUT, DELETE etc as they are requesting that the server execute some action.
+
+app.use is used to mount specific middleware functions at the path which is being specified. app.use can 
+be used to parse URLs, etc
 */
