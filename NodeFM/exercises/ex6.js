@@ -51,7 +51,7 @@ function main() {
 }
 
 function defineRoutes() {
-	app.get("/get-records", function(req, res){
+	app.get("/get-records", async function(req, res){
 		var records = await getAllRecords();
 		res.writeHead(200,{
 			"Content-Type": "application/json",
