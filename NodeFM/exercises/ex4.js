@@ -43,7 +43,7 @@ async function main() {
 				});
 			});
 		},
-		get: util.promisify(myDB.get.bind(myDB)), // util.promisify ships with node. 
+		get: util.promisify(myDB.get.bind(myDB)), // util.promisify ships with node. the run(...args) above are necessary for this promisify stuff
 		all: util.promisify(myDB.all.bind(myDB)),
 		exec: util.promisify(myDB.exec.bind(myDB)),
 	};
@@ -58,9 +58,87 @@ async function main() {
 
 	// ***********
 
-	// TODO: insert values and print all records
+	var otherID = await insertOrLookupOther(other);
+	if (otherID) {
+		let result = await insertSomething(otherID, something);
+		if (result) {
+			var records = await getAllRecords();
+			if (records && records.length > 0) {
+				console.table(records);
+				return;
+			}
+		}
+	}
 
 	error("Oops!");
+}
+
+async function insertOrLookupOther(other){
+	var result = await SQL3.get(
+		`
+			SELECT
+				id
+			FROM
+				other
+			WHERE
+				data = ?
+		`,
+		other
+	);
+
+	if (result && result.id) {
+		return result.id;
+	} else {
+		var result = await SQL3.run(
+			`
+				INSERT INTO
+					Other (data)
+				VALUES
+					(?)
+			`,
+			other
+		);
+		if (result && result.lastID) {
+			return result.lastID;
+		}
+	}
+}
+
+async function insertSomething(otherID, something){
+	var result = await SQL3.run(
+		`
+			INSERT INTO
+				Something (otherID, data)
+			VALUES
+				(?,?)
+		`,
+		otherID,
+		something
+	);
+		//.changes is some built in thing-a-ma method
+	if(result && result.changes > 0){
+		return true;
+	}
+	return false;
+}
+
+async function getAllRecords(){
+	var result = await SQL3.all(
+		`
+			SELECT
+				Other.data AS 'other',
+				Something.data AS 'something'
+			FROM
+				Something JOIN Other
+				ON (Something.otherID = Other.id)
+			ORDER BY
+				Other.id DESC, Something.data ASC
+		`
+	);
+
+	if (result && result.length > 0) {
+		return result;
+	}
 }
 
 function error(err) {
