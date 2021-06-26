@@ -6,9 +6,10 @@ var util = require("util");
 var path = require("path");
 var http = require("http");
 
-// var express = require("express");
+var express = require("express");
 var sqlite3 = require("sqlite3");
 
+var app = express();
 
 // ************************************
 
@@ -35,7 +36,7 @@ var SQL3 = {
 	exec: util.promisify(myDB.exec.bind(myDB)),
 };
 
-var httpserv = http.createServer(app);
+var httpserv = http.createServer(app); // note we are passing app here. app is what we called express. This replaces handle request in the last exercise 
 
 
 main();
@@ -44,34 +45,45 @@ main();
 // ************************************
 
 function main() {
-	// TODO: define routes
-	//
-	// Hints:
-	//
-	// {
-	// 	match: /^\/(?:index\/?)?(?:[?#].*$)?$/,
-	// 	serve: "index.html",
-	// 	force: true,
-	// },
-	// {
-	// 	match: /^\/js\/.+$/,
-	// 	serve: "<% absPath %>",
-	// 	force: true,
-	// },
-	// {
-	// 	match: /^\/(?:[\w\d]+)(?:[\/?#].*$)?$/,
-	// 	serve: function onMatch(params) {
-	// 		return `${params.basename}.html`;
-	// 	},
-	// },
-	// {
-	// 	match: /[^]/,
-	// 	serve: "404.html",
-	// },
-
+	defineRoutes();
 	httpserv.listen(HTTP_PORT);
 	console.log(`Listening on http://localhost:${HTTP_PORT}...`);
 }
+
+function defineRoutes() {
+	app.get("/get-records", function(req, res){
+		var records = await getAllRecords();
+		res.writeHead(200,{
+			"Content-Type": "application/json",
+			"Cache-Control": "no-cache"
+		});
+		res.end(JSON.stringify(records));
+	});
+
+	app.use(function(req,res,next){
+		if (/^\/(?:index\/?)?(?:[?#].*$)?$/.test(req.url)) {
+			req.url = "/index.html";
+		}
+		else if (/^\/js\/.+$/.test(req.url)) {
+			next();
+			return;
+		}
+		else if (/^\/(?:[\w\d]+)(?:[\/?#].*$)?$/.test(req.url)) {
+			let [,basename] = req.url.match(/^\/([\w\d]+)(?:[\/?#].*$)?$/);
+			req.url = `${basename}.html`;
+		}
+
+		next();
+	});
+
+	app.use(express.static(WEB_PATH, {
+		maxAge: 100,
+		setHeaders(res){
+			res.setHeader("Server","Node Workshop: ex6");
+		}
+	}))
+}
+
 
 // *************************
 // NOTE: if sqlite3 is not working for you,
@@ -106,3 +118,13 @@ async function getAllRecords() {
 // 		{ something: 7367746, other: "world" },
 // 	];
 // }
+
+/*
+
+NOTES:
+
+A middleware is a function that gets called if an incoming request matches some criteria.
+
+defining routes as above is the same as defining routes in a SPA. specific first followed by the general. and if statements etc.
+
+*/
