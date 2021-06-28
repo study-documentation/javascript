@@ -3,7 +3,8 @@
     "koa-ejs": "^4.3.0",
     "koa-json": "^2.0.2",
     "koa-router": "^10.0.0",
-    "sqlite3": "^5.0.2"
+    "sqlite3": "^5.0.2",
+    "stream-handbook": "^1.0.0"
   },
   "name": "javascript",
   "description": "The point of this repo is to review syntax and master OOP in Javascript as well as explore the Node.js framework.",
