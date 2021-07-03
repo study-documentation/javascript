@@ -35,7 +35,7 @@ The queue holds the address in memory of a function it does not hold the funcito
 
 ## Promises
 
-Promises work in both the web browser and in Javascript. The two prongs of a Promise 1) return an immediate value to Javascript and 2) spin up a web browser function and replace the initial value with its result after that process is completed and it is returned to the call stack.
+Promises work in both the web browser and in Javascript. The two prongs of a Promise 1) return an immediate value to Javascript and 2) spin up a web browser function and replace the initial value with its result after that process is completed and it is returned to the call stack. Promises can be in one of three states pending, fulfilled, rejected.
 
 Fetch immediately returns an object with a property on it called `value` that is undefined with a hidden object called `on fulfillment`. `on fulfillment` is an array of functions that are triggered when `value` is updated with `value` as the argument. `value` will be updated when the web browser returns the result of the spun up function.
 
@@ -47,10 +47,85 @@ Given all this, if there is a block of code such that `const futureData = fetch(
 
 `.then()` places a function into the `on fulfillment` array. For example, `futureData.then(diplay)` says place the function `display` into `futureData`'s `on fulfillment` array and use value as the argument. `.catch()` places a function into the `on rejection` array.
 
-microtask (aka job) queue supercedes the task queue. Call stack(all tasks) --> Microtask queue(all tasks) --> task queue. The microtask queue can, therefore, starve the task queue.
+Job (aka microtask) queue is prioritized over the callback queue by the event loop. Call stack(all tasks) --> Job queue(all tasks) --> Callback queue. The microtask queue can, therefore, starve the task queue.
 
-In the following block of code:
-
-```
+In the following block of code, ...
 
 ```
+function display(data){console.log(data)};
+function printHello(){console.log("Hello")};
+function blockFor300ms(){some function that takes 300 ms to complete}
+
+setTimeout(printHello(), 0);
+
+const futureData = fetch('https://twitter.com/me/tweets/12');
+futureData.then(display)
+
+blockFor300ms();
+
+console.log("Me first!!");
+```
+
+... in what order will these asynchronous functions run?
+1 - blockFor300ms
+2 - console.log("Me first!!");
+3 - display(data); fetch returns an object and triggers in javascript
+4 - printHello(); triggered directly by the browser time
+
+But why? Java script first runs synchronous code. That accounts for `blockFor300ms` and `console.log("Me first!!");`. Next, `display(data)` is run followed by `printHello`. But, `printHello()` was ready to be run since 1 ms after the program started. So, why is display run first? Since setTimeout relies on the browser time `printHello()` is called from the browser. The call for `printHello()` is waiting in the Callback queue. Display on the other hand is called via `then`. `then` is an async function that updates the value of a promise inside Javascript, not inside the browser. `then`, therefore initiates native JS code not browser functions. The product of `then` is added to the job queue which is given prioroty in the event loop.
+
+## Iterators
+
+Code typically is meant to store data and apply functionality onto it. Accessing data from a data structure is a job in and of itself. How this data is accessed (i.e. for vs. while loops) is irrelevant in instances in which every element in a structure is needed.
+
+NOTE: Javascript never returns to look at past lines. This is simple the-behavior-of-reference-type stuff.
+
+Important to understanding Iterators is the concept of "backpacks" which hold the live data surrounding a function. The technical term for this concept is "closure". This information is stored in a attribute is called `[[scope]]`. Javascript is a lexically (statically) scoped language.
+
+Persistant Lexical Scoped Reference Data.
+
+Closed Over Variable Environment.
+
+closure (i.e. put those values in the closure)
+
+backpack
+
+The only meaningful way to create a backpack is to return a function from where it was born.
+
+This code snippet demostrate the creation of a backpack...
+
+```
+function createFunction(){
+    function add2(num){
+        return num+2;
+    }
+    return add2;
+}
+
+const returnNextElement = createFunction([4,5,6]);
+const element1 = returnNextElement();
+const element2 = returnNextElement();
+```
+
+NOTE: returnNextElement is an object.
+
+Since `createFunction` returns another function it is possible to set up an interator. `newFunction` creates a new execution context by calling returnNextElement. Inside `returnNextElement`, `add2` is called and returned. Upon `return` the execution context is deleted. All of its local memory is erased. However, Javascript creates the closure or "a backpack" in which that local data is appended to and travels with the reference to `createFunction`.
+
+Any function that when called returns the next element in a flow of data is an `iterator` and they turn collections into streams. That's fine.
+
+`symbol.iterator` <-- built in iterator
+
+## Generators
+
+In the code above the assumption is made that the return values for element1 and element2 are 4, 5. However, Javascript actually returns an object which has 2 attributes - value and done. It looks like this...
+
+```
+{
+    value: 4,
+    done: false
+}
+```
+
+once the iterator makes it to 6, this done attribute changes to true. The point is that iterators return objects AND built-in iterator methods such as returnNextElement.next() are in fact objects. These are similar to the wrapper classes of java. Objects that wrap around a function.
+
+Generators are a kind of object that allows persistant state AND a tracker of where we are in a function's execution. To clarify, Iterators did not have this tracker only the persisted state.
