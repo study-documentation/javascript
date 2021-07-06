@@ -129,3 +129,74 @@ In the code above the assumption is made that the return values for element1 and
 once the iterator makes it to 6, this done attribute changes to true. The point is that iterators return objects AND built-in iterator methods such as returnNextElement.next() are in fact objects. These are similar to the wrapper classes of java. Objects that wrap around a function.
 
 Generators are a kind of object that allows persistant state AND a tracker of where we are in a function's execution. To clarify, Iterators did not have this tracker only the persisted state.
+
+```
+function *createFlow(){
+    yield 4
+    yield 5
+    yeild 6
+}
+
+const returnNextElement = createFlow();
+const element1 = returnNextElement.next();
+const element2 = returnNextElement.next();
+```
+
+Execution context is state (memory) and what line of code the program is on. What yeild does is store the backpack of data as well as what line in the function was just run or it stores the execution context.
+`yield` can be treated just as a `return`.
+`[[generatorLocation]]`
+
+Why `returnNextElement = createFlow();` instead of `element1 = createFlow().next;`? It is not the function createFlow that holds the `.next` method. It is the object that stems from referencing a generator function.
+
+```
+function *createFlow(){
+    const num = 10
+    const newNum = yeild num
+    yield 5 + newNum
+    yeild 6
+}
+
+const returnNextElement = createFlow()
+const element1 = returnNextElement.next()
+const element2 = returnNextElement.next(2)
+```
+
+Remember that returnNextElement.next() returns an object, not just the int 10 or whatever is next to yield. Also recall that Iterators are created by calling a function from within another function. `yeild` is, in a manner of speaking, taking the place of this nested function and assuming the role of the code that initiates the beginning of an iteration. The difference, again, being that `yeild` add the ability to track where in the interal execution context we are between exits. `yeild` is a psuedo-pause to the execution context. The way to unpause the execution context is `.next()`.
+
+## Asynchronous Generators
+
+**_block 1_**
+
+```
+function doWhenDataReceived (value){
+    returnNextElement.next(value);
+}
+
+function *createFlow(){
+    const data = yield fetch('https://twitter.com/me/tweets/12')
+    console.log(data)
+}
+
+const returnNextElement = createFlow()
+const futureData = returnNextElement.next()
+
+futureData.then(doWhenDataReceived)
+```
+
+is equal to...
+
+**_block 2_**
+
+```
+async function createFlow(){
+    console.log("Me first")
+    const data = await fetch('https://twitter.com/me/tweets/12')
+    console.log(data)
+}
+
+const futureData = createFlow()
+
+console.log("Me second")
+```
+
+**_block 1_** is a demostration of building async/await from scratch.
