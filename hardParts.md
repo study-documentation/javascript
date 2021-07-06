@@ -200,3 +200,25 @@ console.log("Me second")
 ```
 
 **_block 1_** is a demostration of building async/await from scratch. Note, once again, that the yield keyword allows a thread to exit and return to a particular execution context.
+
+1 - Javascript declares the two functions in memory
+2 - a const is declared called `returnNextElement` which is set equal to the return value of `createFlow()`.
+
+3 - the const `futureData` is declared which is the output of `returnNextElement.next`. `returnNextElement.next` enters the execution context of `createFlow`.
+
+Inside the execution context of `createFlow`, `data` is set as the evaluated result of `yield fetch('https://twitter.com/me/tweets/12')`. The `fetch` returns a promise object AND spins up a web browser function. However, `yeild` kicks us out of the local execution context (similar to `return`)and `futureData` is set equal to the Promise objec that was just produce. Nothing has been stored in `data` since `yeild` kicks us out of the execution context.
+
+The other thing `fetch` did was spin up the web browser `XHR` to get information from Twitter.
+
+We have now exited the execution context of `createFlow`.
+
+4 - The line `futureData.then(doWhenDataReceived)` is reached. `.then()` adds `doWhenDataReceived` to the collection of functions that will be auto triggered when `value` is updated in the Promise object that is being held in `futureData`.
+
+5 - The API response is received and `doWhenDataReceived` is added to the microtask queue. The event loop detects that the global call stack is empty and allows for the API response to proceed. Therefore, `futureData.value` is updated.
+
+Inside `doWhenDataReceived`, the line `returnNextElement.next(value)` sends Javascript back into the execution context of `createFlow`. Since it is using the `next` method and since `yeild` kicked Javascript out of `createFlow` prior to assigning a value to `data`. `value` will now become the assigned value of `data`. `data` is now logged onto to the console.
+
+This is psuedo-synchronous code execution. Note though that it is completely asynchronous. Javascript is exiting and returning to past function blocks and execution contexts. This is the nature of a synchronous single threaded language. Tasks must be shed from the thread and and return later in order for the thread to continue.
+
+**_block2_**
+`async`/`await` does all of that. Above is a description of `async`/`await` created from scratch.
