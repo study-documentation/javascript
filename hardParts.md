@@ -161,7 +161,7 @@ const element1 = returnNextElement.next()
 const element2 = returnNextElement.next(2)
 ```
 
-Remember that returnNextElement.next() returns an object, not just the int 10 or whatever is next to yield. Also recall that Iterators are created by calling a function from within another function. `yeild` is, in a manner of speaking, taking the place of this nested function and assuming the role of the code that initiates the beginning of an iteration. The difference, again, being that `yeild` add the ability to track where in the interal execution context we are between exits. `yeild` is a psuedo-pause to the execution context. The way to unpause the execution context is `.next()`.
+**Remember that returnNextElement.next() returns an object, not just the int 10 or whatever is next to yield.** Also recall that Iterators are created by calling a function from within another function. `yeild` is, in a manner of speaking, taking the place of this nested function and assuming the role of the code that initiates the beginning of an iteration. The difference, again, being that `yeild` add the ability to track where in the interal execution context we are between exits. `yeild` is a psuedo-pause to the execution context. The way to unpause the execution context is `.next()`.
 
 ## Asynchronous Generators
 
@@ -199,4 +199,4 @@ const futureData = createFlow()
 console.log("Me second")
 ```
 
-**_block 1_** is a demostration of building async/await from scratch.
+**_block 1_** is a demostration of building async/await from scratch. Note, once again, that the yield keyword allows a thread to exit and return to a particular execution context.
