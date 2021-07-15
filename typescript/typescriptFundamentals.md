@@ -46,3 +46,33 @@ Typescript - structural type system. Shape refers to the names of the properties
 Here is a tidy way to confine inputs between two values `.map(<variable> => Math.max(0 , Math.min(255, <same variable>)).toString)`... Its cool.
 
 ## Interfaces and Excess Property Checking
+
+When working with object literals only required properties can be specified. There is room for optional properties. But at its base Typescript is only interested in the known properties of of an object.
+
+Outside of optional properties casting can be used as well. The Typescript compiler will throw an error using this method and the additional property will not be accessible. This is where interfaces come in to play.
+
+```
+interface Car {
+    make: string;
+    model: string;
+    year: number;
+};
+
+let myCar: Car = { make: 'Subaru', model: 'Outback', year: 2018}
+```
+
+Similar to a Java interface **BUT** Java interfaces only allow method signatures whereas Typescript interfaces allow properties as well. Can be exported and consumed by other modules.
+
+## `never` and `any`
+
+`any` allows for any data type to be assigned to a given variable. In a way this is indicating a return to standard Javascript for that block of code.
+
+```
+let age = 34;
+let myAge = age as any;
+myAge = '35';
+```
+
+'never' is the complete opposite. Nothing can be assigned to a `never`. This can be useful for blocks of code that must be unreachable. This is, in a way, the compile time equivalent of throw.
+
+NOTE: The `problems` tab in the VSCode terminal is useful when working with Typescript.
