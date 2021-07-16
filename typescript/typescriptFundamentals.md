@@ -82,3 +82,36 @@ myAge = '35';
 NOTE: The `problems` tab in the VSCode terminal is useful when working with Typescript.
 
 # CLASSES
+
+## Methods
+
+There are static methods now! Thats so Java. Thats so nice!
+
+Note: One way that protoypes and classes differ is that the attributes of prototypes are shared across all instances. So, all prototype attributes are like static fields in a Java class. Prototype is not like Class.
+
+## Inheritance
+
+```
+class Employee extends Person {
+    constructor(id, name) {
+        super(name);
+        this._employeeId = id
+    }
+    toJSON() {
+        return {
+            ...super.toJSON(),
+            id: this._employeeId
+        };
+    }
+}
+```
+
+Note that `super` is being used in 2 ways here once for calling the inherited constructor and once for the purpose of overriding a method this is how overriding is handle in JS & TS. Note to the different ways super is being called on as a method call and the other as a method call.
+
+## Species
+
+A species can be thought of as a string that will never collide with another string.
+
+## Mixins
+
+Mixins are abstract classes for TS
