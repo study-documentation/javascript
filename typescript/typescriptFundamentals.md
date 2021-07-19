@@ -276,3 +276,37 @@ console.log(name.first, name.last);
 this will return `Ryan Hufford` and `Glorbin Bjorbin`.
 
 ## Function: Types
+
+This is a function type...
+`let login: (username: string, password: string) => User;`
+
+This is a function value...
+`login = (username, password) => {return new User(); };`
+
+Interfaces can be used to frame out functions as well.
+
+Good ahead and create arrays of functions. Why not?
+
+## Function: Parameters
+
+You must enter an argument for every parameter. There is a work around for this by using the optional operator (`?`)
+
+`|` <-- union type aka a bitwise `or` operator
+
+```
+funciton createTwitterPost(body: string,
+                        username: string = 'computerDude42'),
+                        imageURL?: URL) {
+  // ....
+}
+```
+
+Note the the username param has a default value and the imageURL is an optional.
+
+```
+function doSammy(bread: string,
+name: string,
+...toppings: string[]) {
+/_ do some sammy stuff! _/
+}
+```
