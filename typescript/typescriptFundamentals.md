@@ -94,7 +94,7 @@ Note: One way that protoypes and classes differ is that the attributes of protot
 ```
 class Employee extends Person {
     constructor(id, name) {
-        super(name);
+        super(name);git status
         this._employeeId = id
     }
     toJSON() {
@@ -115,3 +115,164 @@ A species can be thought of as a string that will never collide with another str
 ## Mixins
 
 Mixins are abstract classes for TS
+
+## Classes like interfaces need a defined shape
+
+```
+class Car {
+    make: string
+    model: string
+    year: number
+    constructor(make: string,
+                model: string,
+                year: number) {
+        this.make = make;
+        this.model = model;
+        this.year = year;
+    }
+    startEngine() {
+        return 'VROOOOOOM!';
+    }
+}
+
+let myCar =
+    new Car('Honda', 'Accord', 2017);
+```
+
+## ENUMS
+
+```
+enum AcctType {
+    Checking,
+    Saving,
+    MoneryMarket
+};
+
+type Acct =
+    [number, AcctType];
+
+let account: Acct = [
+    9142.14, AcctType.Checking
+];
+```
+
+## Arrays and Tuples
+
+this is an array...
+`let nums: number[] = [1,2,3,4]`
+
+this is a tuple...
+
+```
+let dependency: [string, number];
+dependency = ['react', 16];
+```
+
+## Type Aliases
+
+`type Color = [number, number, number];`
+`let red: Color = [255, 0, 0];`
+
+Tuples of a certain format can be given an alias. This makes identification much easier. The array above code easily be a set of coordinates OR an RBG color. Naming the tuple Color makes the whole lot easier. Like everyhting else these Aliased types can be exported and whatnot.
+
+# Objects Literals
+
+## Enhanced Object Literals
+
+```
+let company = 'upsie';
+let ryan = {
+    __proto__: MyObject.prototype,
+    name: 'Ryan',
+    age: 35,
+    company,
+    [`${company}Title`]: 'Staff Engineer',
+    toString(){
+        return `${super.toString()} + ${this.name} - ${this.age}`;
+    }
+}
+```
+
+Note that:
+
+- prototypes can be declared inline in the object shape
+- company is shorthand for company: company
+- [`${company}Title`] is a dynamic property name
+- this object contains a super call inside a method
+
+## Destructured Assignment
+
+```
+let person = {
+    name: {
+        first: 'Ryan'
+        last: 'Hufford'
+    },
+    langauges: {
+        backend: {
+            elixir: {
+                experience: '3 years'
+            }
+        }
+    };
+
+    let {
+        name: { first },
+        languages: { backend: serverSkills }
+    } = person;
+}
+
+console.log(``${first} - ${Object.keys(serverSkills)}');
+```
+
+This will log `Ryan - 3 Years`.
+
+## Rest and Spread
+
+Use these to avoid typecasting when creating new objects that build off of others.
+
+**Rest**
+Rest is a catch all for the remainder of the data in this object. So x is equal to x and ...other is equal to the rest of the atttributes in the object. Rest is on the left side of the equality operator.
+
+```
+let data = {x: 34, y: 21, z: 0.1};
+let {x, ...other} = data;
+console.log(others);
+```
+
+This returns `{ y: 21, z: 0.1 }`
+
+**Spread**
+Spread is an operator that places data from one object into another object or data structure. Spread is on the right side of the operator.
+
+```
+let values = { ...other, a: 97, b: 42 };
+console.log(values);
+```
+
+This returns `{ y: 21, z: 0.1, a: 97, b: 42 }`
+
+## Getters and Setters
+
+```
+let name = {
+    first: 'Ryan',
+    last: 'Hufford',
+    get full() {
+        return `${this.first} ${this.last}`;
+    },
+    set full(newVal) {
+        let [a,b] = newVal.split(/\s+/g);
+        this.first = a;
+        this.last = b;
+    }
+}
+
+console.log(name.first, name.last);
+name.full = 'Glorbin Bjorbin'
+console.log(name.first, name.last);
+```
+
+this will return `Ryan Hufford` and `Glorbin Bjorbin`.
+
+## Function: Types
