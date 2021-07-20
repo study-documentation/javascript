@@ -291,7 +291,13 @@ Good ahead and create arrays of functions. Why not?
 
 You must enter an argument for every parameter. There is a work around for this by using the optional operator (`?`)
 
-`|` <-- union type aka a bitwise `or` operator
+`|` <-- union type aka a bitwise `or` operator. Such that...
+
+`let criticalURL: URL | undefined` <-- allow for this variable to be undefined.
+-or-
+`criticalURL = imageURL || fallbackURL;` <-- if the `| undefined` was left out of the declaration above, this line would work. Here it is saying if critical URL is a parameter it must be assigned so give it this fallback value.
+-or-
+`function createTwitterPost(body: string, userName: string, imageURL?: URL){}` <-- add the optional operator.
 
 ```
 funciton createTwitterPost(body: string,
@@ -301,7 +307,7 @@ funciton createTwitterPost(body: string,
 }
 ```
 
-Note the the username param has a default value and the imageURL is an optional.
+Note above the the username param has a default value and the imageURL is an optional.
 
 ```
 function doSammy(bread: string,
@@ -310,3 +316,28 @@ name: string,
 /_ do some sammy stuff! _/
 }
 ```
+
+Above a rest parameter is being used similar to a vararg in Java. It says this chunk of data is to be captured in a toppings array. Only one and always goes at the end for obvious reasons.
+
+## Generics
+
+```
+function gimmieFive<T>(x: T): T[] {
+    return [x, x, x, x, x]
+}
+```
+
+`function midpoint<T extends Point2D>(p1: T, p2: T){}`
+Generics behave the same way as in Java. They can be made more specific by using `extends`.
+
+## Access Modifiers
+
+- public - anyone can access
+- protected - self and subclasses
+- private - self reference only
+- static - class referencing
+- readonly - similar to final in Java
+
+## Function Overloading
+
+Again same as Java. create them most specific to least specific.
