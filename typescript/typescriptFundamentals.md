@@ -341,3 +341,9 @@ Generics behave the same way as in Java. They can be made more specific by using
 ## Function Overloading
 
 Again same as Java. create them most specific to least specific.
+
+# Iterators & Generators
+
+## Iterators
+
+An object that has a function on it called next. The value this function returns has two properties on it (value and done). That next There you go.
